@@ -18,11 +18,67 @@ class App extends React.Component {
 
     this.simulate = this.simulate.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.displayBinData = this.displayBinData.bind(this);
   }
 
-//   componentDidMount() {
-
-//   }
+displayBinData() {
+  return  (
+ <div>
+   <div>
+   <table>
+       <th>
+           Bins per km
+       </th>
+       <tbody>
+              { 
+                       this.state.booking_bins.map((bin => 
+                        <tr><td>{bin}</td></tr>  
+                       ))
+              }   
+       </tbody>
+   </table>
+   </div>
+   <div>
+   <p> popular drop off points</p>
+         <table>
+         <tr>
+                 <th>Name</th>
+                 <th>Coordinates</th>
+                 </tr>
+                 <tbody>
+                    { 
+                             this.state.drop_off_points.map((point => 
+                                 <tr>
+                                 <td>{point["name"]}</td>
+                                 <td>{point["coordinates"]}</td>
+                            </tr>  
+                             )
+                    )}   
+                    </tbody>
+         </table>
+         </div>
+         <div>
+         <p> popular pick up points</p>
+         <table>
+             <tr>
+                 <th>Name</th>
+                 <th>Coordinates</th>
+                 </tr>
+                 <tbody>
+                    { 
+                             this.state.pick_up_points.map((point => 
+                              <tr>
+                                  <td>{point["name"]}</td>
+                                  <td>{point["coordinates"]}</td>
+                             </tr>  
+                             )
+                    )}   
+                    </tbody>
+         </table>
+         </div>
+         </div>
+  );
+}
 
   simulate(e) {
 
@@ -42,9 +98,6 @@ class App extends React.Component {
       .then(response => response.json())
       .then(response => {
         console.log(response);
-       // const instance = new SimulationData(response);
-        // return instance.render();
-
         let tempArr = [];
         let keys = Object.keys(response.booking_distance_bins);
         keys.forEach(key =>{
@@ -71,7 +124,6 @@ class App extends React.Component {
                  "coordinates":feature.geometry.coordinates});
             }
         );
-        
 
         this.setState({
             booking_bins:tempArr,
@@ -82,6 +134,7 @@ class App extends React.Component {
       .catch(err => {
         console.log(err);
       });
+      return this.displayBinData();
   }
 
   handleChange(changeObject) {
@@ -89,12 +142,6 @@ class App extends React.Component {
   }
 
   render() {
-    //   if(this.state.booking_bins.length > 0)
-    //   {
-    //     return this.displayBinData();
-    //   }
-    //   else
-    //   {
         return (
         <div className="container">
           <div className="row justify-content-center">
@@ -185,80 +232,12 @@ class App extends React.Component {
                 </div>
               </form>
               <br/>
-              <div>
-      <table>
-          <th>
-              Bins per km
-              </th>
-              <tbody>
-                 { 
-                          this.state.booking_bins.map((bin => 
-                           <tr><td>{bin}</td></tr>  
-                          )
-                 )}   
-                 </tbody>
-      </table>
-      </div>
-      <p> popular drop off points</p>
-            <table>
-            <tr>
-                    <th>Name</th>
-                    <th>Coordinates</th>
-                    </tr>
-                    <tbody>
-                       { 
-                                this.state.drop_off_points.map((point => 
-                                    <tr>
-                                    <td>{point["name"]}</td>
-                                    <td>{point["coordinates"]}</td>
-                               </tr>  
-                                )
-                       )}   
-                       </tbody>
-            </table>
-            <p> popular pick up points</p>
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Coordinates</th>
-                    </tr>
-                    <tbody>
-                       { 
-                                this.state.pick_up_points.map((point => 
-                                 <tr>
-                                     <td>{point["name"]}</td>
-                                     <td>{point["coordinates"]}</td>
-                                </tr>  
-                                )
-                       )}   
-                       </tbody>
-            </table>
             </div>
           </div>
         </div>
     );
-  //}
 }
-
-//   displayBinData() {
-//       return  (
-//       <div>
-//       <table>
-//           <th>
-//               Bins per km
-//               </th>
-//               <tbody>
-//                  { 
-//                           this.state.booking_bins.map((bin => 
-//                            <tr><td>{bin}</td></tr>  
-//                           )
-//                  )}   
-//                  </tbody>
-//       </table>
-//       </div>
-//       );
-//   }
- }
+}
  
 let domContainer = document.querySelector('#root');
 ReactDOM.render(<App />, domContainer);

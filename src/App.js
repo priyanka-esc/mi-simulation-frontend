@@ -11,6 +11,8 @@ class App extends React.Component {
         minLongitude:'',
         maxLongitude:'',
         requestCount:'',
+        showMessage:false,
+        isError:false,
        booking_bins:[],
        drop_off_points:[],
        pick_up_points:[]
@@ -39,7 +41,7 @@ displayBinData() {
    </table>
    </div>
    <div>
-   <p> popular drop off points</p>
+   <h3> Popular drop off points</h3>
          <table>
          <tr>
                  <th>Name</th>
@@ -58,7 +60,7 @@ displayBinData() {
          </table>
          </div>
          <div>
-         <p> popular pick up points</p>
+         <h3> Popular pick up points</h3>
          <table>
              <tr>
                  <th>Name</th>
@@ -81,7 +83,6 @@ displayBinData() {
 }
 
   simulate(e) {
-
    let url = `${config.BACKEND_SERVER_URL}?minLatitude=${encodeURIComponent(this.state.minLatitude)}&maxLatitude=${encodeURIComponent(this.state.maxLatitude)}&minLongitude=${encodeURIComponent(this.state.minLongitude)}&maxLongitude=${encodeURIComponent(this.state.maxLongitude)}`;
     if(this.state.requestCount)
         {
@@ -98,6 +99,7 @@ displayBinData() {
       .then(response => response.json())
       .then(response => {
         console.log(response);
+
         let tempArr = [];
         let keys = Object.keys(response.booking_distance_bins);
         keys.forEach(key =>{
@@ -114,7 +116,6 @@ displayBinData() {
                  "coordinates":feature.geometry.coordinates});
             }
         );
-
         parsed = JSON.parse(response.most_popular_pickup_points);
         let tempPickupPoints = [];
         parsed.features.forEach(feature => 
@@ -124,17 +125,20 @@ displayBinData() {
                  "coordinates":feature.geometry.coordinates});
             }
         );
-
+        
         this.setState({
             booking_bins:tempArr,
             drop_off_points:tempDropOffPoints,
-            pick_up_points:tempPickupPoints
+            pick_up_points:tempPickupPoints,
+            showMessage:true
         });       
       })
       .catch(err => {
         console.log(err);
+        this.setState({
+        isError:true
+        });
       });
-      return this.displayBinData();
   }
 
   handleChange(changeObject) {
@@ -188,9 +192,6 @@ displayBinData() {
                     id="minLongitude"
                     type="text"
                     className="form-control"
-                    //value={this.state.name}
-                    //onChange={(e) => this.handleChange({ name: e.target.value })}
-                    
                     value={this.state.minLongitude}
                     onChange={(e) => this.handleChange({ minLongitude: e.target.value })}
                     required
@@ -229,6 +230,10 @@ displayBinData() {
                     <button className="btn btn-primary" type='button' onClick={(e) => this.simulate(e)}>
                   Simulate
                 </button>
+                { this.state.showMessage && this.displayBinData() }  
+                { this.state.isError && <div>Error fecthing simulated data, make sure the service is up and running</div> }       
+                <div>
+      </div>
                 </div>
               </form>
               <br/>
